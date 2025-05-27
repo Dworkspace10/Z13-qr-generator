@@ -169,3 +169,32 @@ function shareQR() {
 function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 }
+
+
+document.getElementById("bgInput").addEventListener("change", async function () {
+  const file = this.files[0];
+  if (!file || !file.type.startsWith("image/")) return alert("Pilih file gambar!");
+
+  const formData = new FormData();
+  formData.append("image_file", file);
+  formData.append("size", "auto");
+
+  const apiKey = "ISI_API_KEY_REMOVE_BG_KAMU"; // <- Ganti dengan milikmu
+
+  try {
+    const res = await fetch("https://api.remove.bg/v1.0/removebg", {
+      method: "POST",
+      headers: { "X-Api-Key": apiKey },
+      body: formData,
+    });
+
+    if (!res.ok) throw new Error("Gagal memproses gambar");
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    document.getElementById("bgResult").innerHTML = `<img src="${url}" style="max-width:100%; border:1px solid #ccc;" />`;
+  } catch (err) {
+    alert("Gagal menghapus background gambar.");
+    console.error(err);
+  }
+});
