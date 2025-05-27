@@ -9,17 +9,10 @@
   <title>Z13 QR Generator Pro</title>
 </head>
 <body>
-  <div class="container">
-    <hr />
-    <h2>🪄 Alat Hapus Background Gambar</h2>
-    <input type="file" id="bgInput" />
-    <div id="bgResult" style="margin-top:10px;"></div>
-  </div>
-  <div class="container">
-    <h1>Z13 QR Generator Pro</h1>
+   <main class="container">
     <form id="qrForm">
-      <label for="text">Masukkan link atau teks</label>
-      <input type="text" id="text" placeholder="WA, pembayaran, dsb" required />
+      <label for="text">Teks / Link</label>
+      <input type="text" id="text" placeholder="Tautan / teks" required />
 
       <label for="color">Warna QR</label>
       <input type="color" id="color" value="#000000" />
@@ -31,12 +24,11 @@
         <option value="1024">1024 x 1024</option>
       </select>
 
-      <label for="desc">Deskripsi Tambahan (opsional)</label>
-      <textarea id="desc" rows="3"></textarea>
+      <label for="desc">Deskripsi Tambahan</label>
+      <textarea id="desc" rows="2" placeholder="Teks di bawah QR (opsional)"></textarea>
 
       <label for="logo">Logo (opsional)</label>
-      <input type="file" id="logo" accept="image/*" />
-
+      <input type="file" id="logo" />
       <div id="logoPreview"></div>
 
       <button type="submit">🔄 Buat QR</button>
@@ -44,7 +36,13 @@
 
     <div id="qrcode"></div>
     <div id="downloadContainer"></div>
-  </div>
+
+    <section class="tool-section">
+      <h2>🛠 Hapus Background Gambar</h2>
+      <input type="file" id="bgRemoveInput" />
+      <div id="bgResult"></div>
+    </section>
+  </main>
 
   <aside class="sidebar">
     <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
