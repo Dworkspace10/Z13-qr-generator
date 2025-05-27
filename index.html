@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/png" href="icon.png">
+  <title>Z13 QR Generator Pro</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Z13 QR Generator Pro</h1>
+    <form id="qrForm">
+      <label for="text">Masukkan link atau teks</label>
+      <input type="text" id="text" placeholder="WA, pembayaran, dsb" required />
+
+      <label for="color">Warna QR</label>
+      <input type="color" id="color" value="#000000" />
+
+      <label for="size">Ukuran</label>
+      <select id="size">
+        <option value="256">256 x 256</option>
+        <option value="512">512 x 512</option>
+        <option value="1024">1024 x 1024</option>
+      </select>
+
+      <label for="desc">Deskripsi Tambahan (opsional)</label>
+      <textarea id="desc" rows="3"></textarea>
+
+      <label for="logo">Logo (opsional)</label>
+      <input type="file" id="logo" accept="image/*" />
+
+      <div id="logoPreview"></div>
+
+      <button type="submit">🔄 Buat QR</button>
+    </form>
+
+    <div id="qrcode"></div>
+    <div id="downloadContainer"></div>
+  </div>
+
+  <aside class="sidebar">
+    <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
+    <button onclick="downloadPDF()">🧾 Unduh PDF</button>
+    <button onclick="copyQR()">📋 Salin Gambar</button>
+    <button onclick="shareQR()">📤 Bagikan</button>
+    <button onclick="toggleDarkMode()">🌓 Mode Gelap</button>
+  </aside>
+
+  <div class="marquee">
+  <p>🎉 Selamat datang di Z13 QR Code Generator Pro! Gunakan logo dengan background transparan untuk hasil terbaik! 🎉 MD(^<^)</p>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
