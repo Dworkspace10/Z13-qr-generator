@@ -1,163 +1,95 @@
-const form = document.getElementById("qrForm");
-const qrContainer = document.getElementById("qrcode");
-const downloadContainer = document.getElementById("downloadContainer");
-const logoPreview = document.getElementById("logoPreview");
-let logoURL = "";
+// app.js
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
-  qrContainer.innerHTML = "";
-  downloadContainer.innerHTML = "";
+document.addEventListener("DOMContentLoaded", () => {
+  const qrForm = document.getElementById("qrForm");
+  const qrImage = document.getElementById("qrImage");
+  const logoInput = document.getElementById("logo");
+  const logoPreview = document.getElementById("logoPreview");
+  const removeBgInput = document.getElementById("removeBgInput");
+  const removeBgPreview = document.getElementById("removeBgPreview");
+  const removeBgBtn = document.getElementById("removeBgBtn");
+  const downloadRemovedBgBtn = document.getElementById("downloadRemovedBgBtn");
 
-  const text = document.getElementById("text").value;
-  const color = document.getElementById("color").value;
-  const size = parseInt(document.getElementById("size").value);
-  const desc = document.getElementById("desc").value;
+  qrForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const url = document.getElementById("text").value;
+    const color = document.getElementById("color").value;
+    const size = document.getElementById("size").value;
+    const description = document.getElementById("description").value;
+    const logoFile = logoInput.files[0];
 
-  const canvas = document.createElement("canvas");
-  canvas.width = canvas.height = size;
+    if (!url) return alert("Masukkan URL atau teks terlebih dahulu.");
 
-  QRCode.toCanvas(
-    canvas,
-    text,
-    {
-      width: size,
-      color: {
-        dark: color,
-        light: "#ffffff",
-      },
-    },
-    function (err) {
-      if (err) return console.error(err);
+    const qrCodeAPI = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+      url
+    )}&size=${size}&color=${color.substring(1)}`;
 
-      const ctx = canvas.getContext("2d");
-
-      if (logoURL) {
-        const logo = new Image();
-        logo.onload = function () {
-          const logoSize = size * 0.2;
-          const x = (size - logoSize) / 2;
-          const y = (size - logoSize) / 2;
-          ctx.drawImage(logo, x, y, logoSize, logoSize);
-          displayResult(canvas, desc);
-        };
-        logo.src = logoURL;
-      } else {
-        displayResult(canvas, desc);
-      }
-    }
-  );
-});
-
-function displayResult(canvas, desc) {
-  qrContainer.appendChild(canvas);
-  if (desc) {
-    const descElem = document.createElement("p");
-    descElem.textContent = desc;
-    descElem.style.textAlign = "center";
-    descElem.style.marginTop = "10px";
-    qrContainer.appendChild(descElem);
-  }
-  addDownloadButton(canvas);
-}
-
-// ==== LOGO UPLOAD & REMOVE BG ====
-document.getElementById("logo").addEventListener("change", async function () {
-  const file = this.files[0];
-  if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    alert("File harus berupa gambar!");
-    this.value = "";
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("image_file", file);
-  formData.append("size", "auto");
-
-  const apiKey = "VfujqScV6JYmAvNKTza6PK28"; // Ganti dengan API key Anda
-
-  try {
-    const response = await fetch("https://api.remove.bg/v1.0/removebg", {
-      method: "POST",
-      headers: { "X-Api-Key": apiKey },
-      body: formData,
-    });
-
-    if (!response.ok) throw new Error("Remove.bg gagal");
-
-    const blob = await response.blob();
-    logoURL = URL.createObjectURL(blob);
-  } catch (err) {
-    console.warn("Fallback ke gambar asli karena gagal hapus background");
-    logoURL = URL.createObjectURL(file);
-  }
-
-  // Tampilkan preview
-  logoPreview.innerHTML = "";
-  const img = document.createElement("img");
-  img.src = logoURL;
-  img.alt = "Preview Logo (Tanpa Background)";
-  img.style.maxWidth = "100%";
-  img.style.marginTop = "10px";
-  img.style.border = "1px solid #ccc";
-  img.style.borderRadius = "8px";
-  logoPreview.appendChild(img);
-});
-
-// ==== Tools ====
-function addDownloadButton(canvas) {
-  const btn = document.createElement("button");
-  btn.textContent = "⬇️ Unduh QR (PNG)";
-  btn.onclick = () => {
-    const a = document.createElement("a");
-    a.href = canvas.toDataURL("image/png");
-    a.download = "qrcode.png";
-    a.click();
-  };
-  downloadContainer.appendChild(btn);
-}
-
-function downloadPDF() {
-  const element = qrContainer;
-  if (!element) return;
-  html2pdf().from(element).save("qrcode.pdf");
-}
-
-function copyQR() {
-  const canvas = qrContainer.querySelector("canvas");
-  if (!canvas) return;
-
-  canvas.toBlob((blob) => {
-    const item = new ClipboardItem({ "image/png": blob });
-    navigator.clipboard.write([item]).then(() => {
-      alert("QR code berhasil disalin ke clipboard!");
-    });
+    qrImage.src = qrCodeAPI;
   });
-}
 
-function shareQR() {
-  const canvas = qrContainer.querySelector("canvas");
-  if (!canvas || !navigator.canShare) return;
+  logoInput.addEventListener("change", () => {
+    logoPreview.innerHTML = "";
+    const file = logoInput.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.alt = "Preview Logo";
+        img.style.maxWidth = "100%";
+        img.style.borderRadius = "8px";
+        img.style.border = "1px solid #ccc";
+        logoPreview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    }
+  });
 
-  canvas.toBlob((blob) => {
-    const file = new File([blob], "qrcode.png", { type: "image/png" });
-    if (navigator.canShare({ files: [file] })) {
-      navigator.share({
-        title: "QR Code",
-        files: [file],
+  removeBgInput.addEventListener("change", () => {
+    removeBgPreview.innerHTML = "";
+  });
+
+  removeBgBtn.addEventListener("click", async () => {
+    const file = removeBgInput.files[0];
+    if (!file) return alert("Pilih gambar terlebih dahulu.");
+
+    const formData = new FormData();
+    formData.append("image_file", file);
+    formData.append("size", "auto");
+
+    try {
+      const res = await fetch("https://api.remove.bg/v1.0/removebg", {
+        method: "POST",
+        headers: {
+          "X-Api-Key": "YOUR_REMOVE_BG_API_KEY"
+        },
+        body: formData,
       });
-    } else {
-      alert("Fitur berbagi tidak tersedia di perangkat ini.");
+
+      if (!res.ok) throw new Error("Gagal menghapus background.");
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "Preview Tanpa Background";
+      img.style.maxWidth = "100%";
+      img.style.border = "1px solid #ccc";
+      img.style.borderRadius = "8px";
+      removeBgPreview.appendChild(img);
+
+      downloadRemovedBgBtn.href = url;
+      downloadRemovedBgBtn.download = "logo-no-bg.png";
+      downloadRemovedBgBtn.style.display = "inline-block";
+    } catch (error) {
+      alert("Terjadi kesalahan saat menghapus background.");
     }
   });
-}
 
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-}
-
-document.getElementById("toggleSidebar").addEventListener("click", () => {
-  document.getElementById("responsiveSidebar").classList.toggle("open");
+  // Dark mode toggle
+  const toggleDark = document.getElementById("toggleDark");
+  toggleDark.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+  });
 });
