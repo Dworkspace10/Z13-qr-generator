@@ -10,45 +10,45 @@
 
 <body>
   <button id="toggleSidebar" class="toggle-btn">☰</button>
-  <div class="sidebar">
+
+  <nav class="sidebar">
     <button id="download-png">📥 Unduh PNG</button>
     <button id="download-pdf">📄 Unduh PDF</button>
     <button id="copy-image">📋 Salin Gambar</button>
     <button id="share-btn">🔗 Bagikan</button>
     <button id="dark-mode-toggle">🌓 Mode Gelap</button>
-  </div>
+  </nav>
 
   <div class="main-container">
-    <section class="container">
+    <section class="card">
       <h1>Z13 QR Generator Pro</h1>
-      <label>Masukkan link atau teks</label>
+      <label for="text-input">Masukkan link atau teks</label>
       <input type="text" id="text-input" placeholder="WA, pembayaran, dsb" />
 
-      <label>Warna QR</label>
+      <label for="qr-color">Warna QR</label>
       <input type="color" id="qr-color" value="#000000" />
 
-      <label>Ukuran</label>
+      <label for="qr-size">Ukuran</label>
       <select id="qr-size">
         <option value="256">256 x 256</option>
         <option value="512">512 x 512</option>
       </select>
 
-      <label>Deskripsi Tambahan (opsional)</label>
+      <label for="qr-desc">Deskripsi Tambahan (opsional)</label>
       <textarea id="qr-desc" placeholder="Teks di bawah QR (opsional)"></textarea>
 
-      <label>Logo (opsional)</label>
+      <label for="logo-input">Logo (opsional)</label>
       <input type="file" id="logo-input" accept="image/*" />
 
       <button id="generate-btn">🎯 Buat QR</button>
-
       <div id="qr-result"></div>
+    </section>
 
-      <div class="remove-bg-section">
-        <h3>🛠️ Hapus Background Gambar</h3>
-        <input type="file" id="remove-bg-input" accept="image/*" />
-        <div id="logoPreview"></div>
-        <a id="download-removed-bg" href="#" download style="display: none;">⬇️ Unduh Logo Tanpa Background</a>
-      </div>
+    <section class="card remove-bg-section">
+      <h3>🛠️ Hapus Background Gambar</h3>
+      <input type="file" id="remove-bg-input" accept="image/*" />
+      <div id="logoPreview"></div>
+      <a id="download-removed-bg" href="#" download style="display: none;">⬇️ Unduh Logo Tanpa Background</a>
     </section>
 
     <footer>
