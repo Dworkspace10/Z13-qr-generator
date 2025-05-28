@@ -6,13 +6,14 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="icon.png">
-  <title>Z13 QR Generator Pro</title>
+  <title>QR Generator Pro</title>
 </head>
 <body>
-   <main class="container">
+  <div class="container">
+    <h1>🎯 QR Generator Pro</h1>
     <form id="qrForm">
-      <label for="text">Teks / Link</label>
-      <input type="text" id="text" placeholder="Tautan / teks" required />
+      <label for="text">Masukkan link atau teks</label>
+      <input type="text" id="text" placeholder="WA, pembayaran, dsb" required />
 
       <label for="color">Warna QR</label>
       <input type="color" id="color" value="#000000" />
@@ -24,11 +25,12 @@
         <option value="1024">1024 x 1024</option>
       </select>
 
-      <label for="desc">Deskripsi Tambahan</label>
-      <textarea id="desc" rows="2" placeholder="Teks di bawah QR (opsional)"></textarea>
+      <label for="desc">Deskripsi Tambahan (opsional)</label>
+      <textarea id="desc" rows="3"></textarea>
 
       <label for="logo">Logo (opsional)</label>
       <input type="file" id="logo" />
+
       <div id="logoPreview"></div>
 
       <button type="submit">🔄 Buat QR</button>
@@ -36,13 +38,7 @@
 
     <div id="qrcode"></div>
     <div id="downloadContainer"></div>
-
-    <section class="tool-section">
-      <h2>🛠 Hapus Background Gambar</h2>
-      <input type="file" id="bgRemoveInput" />
-      <div id="bgResult"></div>
-    </section>
-  </main>
+  </div>
 
   <aside class="sidebar">
     <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
@@ -52,10 +48,7 @@
     <button onclick="toggleDarkMode()">🌓 Mode Gelap</button>
   </aside>
 
-  <div class="marquee">
-  <p>🎉 Selamat datang di Z13 QR Code Generator Pro! Gunakan logo dengan background transparan untuk hasil terbaik! 🎉 MD(^<^)</p>
-  </div>
-
+  <marquee behavior="scroll" direction="left" class="marquee">Terima kasih telah menggunakan QR Generator Pro | Powered by OpenAI & Anda 😄</marquee>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
