@@ -93,3 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.toggle("dark-mode");
   });
 });
+
+// Toggle Sidebar
+const toggleBtn = document.getElementById('toggleSidebar');
+const sidebar = document.querySelector('.sidebar');
+const mainContainer = document.querySelector('.main-container');
+
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  mainContainer.classList.toggle('collapsed');
+});
+
