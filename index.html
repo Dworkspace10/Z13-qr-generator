@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="manifest" href="manifest.json" />
+  <title>Z13 QR Generator Pro</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="icon.png">
-  <title>Z13 Generator Pro</title>
 </head>
-<body>
-  <div class="container">
-    <h1>Z13 QR Generator Pro</h1>
-    <form id="qrForm">
-      <label for="text">Masukkan link atau teks</label>
-      <input type="text" id="text" placeholder="WA, pembayaran, dsb" required />
 
-      <label for="color">Warna QR</label>
-      <input type="color" id="color" value="#000000" />
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
+  <div class="flex">
+    <!-- Sidebar -->
+    <div class="min-h-screen w-40 bg-[#0f172a] text-white p-4 flex flex-col gap-4">
+      <button id="downloadPNG" class="btn-sidebar">📥 Unduh PNG</button>
+      <button id="downloadPDF" class="btn-sidebar">📄 Unduh PDF</button>
+      <button id="copyImage" class="btn-sidebar">📋 Salin Gambar</button>
+      <button id="shareImage" class="btn-sidebar">🔗 Bagikan</button>
+      <button id="toggleDark" class="btn-sidebar">🌓 Mode Gelap</button>
+    </div>
 
-      <label for="size">Ukuran</label>
-      <select id="size">
-        <option value="256">256 x 256</option>
-        <option value="512">512 x 512</option>
-        <option value="1024">1024 x 1024</option>
-      </select>
+    <!-- Main Content -->
+    <main class="flex-1 p-6 flex flex-col items-center">
+      <div class="card w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Z13 QR Generator Pro</h1>
 
-      <label for="desc">Deskripsi Tambahan (opsional)</label>
-      <textarea id="desc" rows="3"></textarea>
+        <label class="block mb-2">Masukkan link atau teks</label>
+        <input type="text" id="text" class="input" placeholder="WA, pembayaran, dsb" />
 
-      <label for="logo">Logo (opsional)</label>
-      <input type="file" id="logo" />
+        <label class="block mt-4 mb-2">Warna QR</label>
+        <input type="color" id="color" class="w-full h-10 rounded" />
 
-      <div id="logoPreview"></div>
+        <label class="block mt-4 mb-2">Ukuran</label>
+        <select id="size" class="input">
+          <option value="256">256 x 256</option>
+          <option value="512">512 x 512</option>
+          <option value="1024">1024 x 1024</option>
+        </select>
 
-      <button type="submit">🔄 Buat QR</button>
-    </form>
+        <label class="block mt-4 mb-2">Deskripsi Tambahan (opsional)</label>
+        <textarea id="extraText" class="input" rows="3"></textarea>
 
-    <div id="qrcode"></div>
-    <div id="downloadContainer"></div>
+        <label class="block mt-4 mb-2">Logo (opsional)</label>
+        <input type="file" id="logoInput" accept="image/*" class="input" />
+
+        <button id="generateQR" class="btn-primary mt-4 w-full">📡 Buat QR</button>
+      </div>
+
+      <!-- Preview QR -->
+      <div id="qrResult" class="mt-6"></div>
+
+      <!-- Fitur Remove Background -->
+      <div class="card mt-6 text-center">
+        <h3 class="text-lg font-semibold mb-2 flex items-center justify-center gap-2">
+          🪄 Hapus Background Gambar
+        </h3>
+        <input type="file" id="removeBgInput" accept="image/*" class="input" />
+        <div id="logoPreview" class="mt-4"></div>
+      </div>
+
+      <!-- Marquee -->
+      <marquee class="mt-8 text-sm">Gunakan QR Generator Pro | Powered by OpenAI & Anda 😎</marquee>
+    </main>
   </div>
 
-<div class="card mt-4">
-  <h3 class="text-lg font-semibold mb-2 flex items-center gap-2">
-    🛠️ Hapus Background Gambar
-  </h3>
-  <input type="file" id="removeBgInput" accept="image/*" />
-  <div id="logoPreview" class="mt-3"></div>
-</div>
-
-<div class="tools-toggle">
-  <button id="toggleSidebar">⚙️</button>
-</div>
-<aside class="sidebar responsive" id="responsiveSidebar">
-  <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
-  <button onclick="downloadPDF()">🧾 Unduh PDF</button>
-  <button onclick="copyQR()">📋 Salin Gambar</button>
-  <button onclick="shareQR()">📤 Bagikan</button>
-  <button onclick="toggleDarkMode()">🌓 Mode Gelap</button>
-</aside>
-
-  <marquee behavior="scroll" direction="left" class="marquee">Terima kasih telah menggunakan QR Generator Pro | Powered by OpenAI & Anda 😄</marquee>
-
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
   <script src="app.js"></script>
 </body>
+
 </html>
