@@ -1,53 +1,54 @@
+/* Reset dasar */
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
+/* Layout utama */
 body {
-  margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: #f3f4f6;
   color: #111827;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  transition: background-color 0.3s;
+  align-items: center;
+  padding: 1rem;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-header, footer {
-  text-align: center;
-  padding: 1rem;
+.dark-mode {
+  background-color: #111827;
+  color: #e5e7eb;
 }
 
 .container {
-  max-width: 600px;
-  margin: auto;
-  padding: 1rem;
   background: white;
+  padding: 2rem;
   border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+  transition: background 0.3s;
 }
 
-.sidebar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem;
+.dark-mode .container {
+  background: #1f2937;
 }
 
-.sidebar button {
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+/* Judul dan formulir */
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 2rem;
 }
 
 label {
-  margin-top: 1rem;
   display: block;
-  font-weight: bold;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
 }
 
 input[type="text"],
@@ -56,52 +57,122 @@ select,
 textarea,
 input[type="file"] {
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 8px;
+  padding: 10px;
   border: 1px solid #d1d5db;
-  margin-top: 0.3rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  color: #111827;
+}
+
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select {
+  background: #374151;
+  color: #e5e7eb;
+  border: 1px solid #4b5563;
 }
 
 button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
   background-color: #3b82f6;
   color: white;
   border: none;
-  padding: 0.75rem;
   border-radius: 8px;
-  margin-top: 1rem;
   cursor: pointer;
-  width: 100%;
 }
 
+button:hover {
+  background-color: #2563eb;
+}
+
+/* QR code dan preview */
 #qrcode {
   text-align: center;
   margin-top: 2rem;
 }
 
-.tool-section {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #d1d5db;
+#logoPreview {
+  margin-top: 1rem;
+  text-align: center;
 }
 
-#logoPreview img, #bgResult img {
-  max-width: 100%;
-  margin-top: 10px;
+#logoPreview img {
+  max-width: 150px;
+  border: 1px solid #ccc;
   border-radius: 8px;
+  margin-top: 10px;
 }
 
-.dark-mode {
-  background-color: #111827;
-  color: #e5e7eb;
+/* Sidebar tombol tools */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 600px;
 }
 
-.dark-mode .container {
-  background-color: #1f2937;
+.sidebar button {
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  background-color: #6b7280;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.marquee-footer {
-  margin-top: auto;
-  background-color: #e5e7eb;
-  padding: 0.5rem;
-  font-size: 0.9rem;
+.sidebar button:hover {
+  background-color: #4b5563;
+}
+
+/* Download container */
+#downloadContainer {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Tulisan berjalan */
+.marquee {
+  margin-top: 2rem;
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-shadow: inset 0 -1px 0 #ccc;
+  background: #f9fafb;
+}
+
+.marquee span {
+  display: inline-block;
+  padding: 1rem;
+  animation: marquee 12s linear infinite;
+  font-weight: 500;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+  .container,
+  .sidebar {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
 }
