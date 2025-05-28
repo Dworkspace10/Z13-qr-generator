@@ -39,17 +39,17 @@ form.addEventListener("submit", function (e) {
           const x = (size - logoSize) / 2;
           const y = (size - logoSize) / 2;
           ctx.drawImage(logo, x, y, logoSize, logoSize);
-          appendToContainer(canvas, desc);
+          displayResult(canvas, desc);
         };
         logo.src = logoURL;
       } else {
-        appendToContainer(canvas, desc);
+        displayResult(canvas, desc);
       }
     }
   );
 });
 
-function appendToContainer(canvas, desc) {
+function displayResult(canvas, desc) {
   qrContainer.appendChild(canvas);
   if (desc) {
     const descElem = document.createElement("p");
@@ -61,6 +61,7 @@ function appendToContainer(canvas, desc) {
   addDownloadButton(canvas);
 }
 
+// ==== LOGO UPLOAD & REMOVE BG ====
 document.getElementById("logo").addEventListener("change", async function () {
   const file = this.files[0];
   if (!file) return;
@@ -84,43 +85,38 @@ document.getElementById("logo").addEventListener("change", async function () {
       body: formData,
     });
 
-    if (!response.ok) throw new Error("Gagal hapus background");
+    if (!response.ok) throw new Error("Remove.bg gagal");
+
     const blob = await response.blob();
     logoURL = URL.createObjectURL(blob);
   } catch (err) {
-    console.warn("Remove.bg gagal, fallback ke logo biasa");
+    console.warn("Fallback ke gambar asli karena gagal hapus background");
     logoURL = URL.createObjectURL(file);
   }
 
-  // Tampilkan preview logo
+  // Tampilkan preview
   logoPreview.innerHTML = "";
   const img = document.createElement("img");
   img.src = logoURL;
-  img.alt = "Preview Logo";
-  img.style.maxWidth = "100px";
+  img.alt = "Preview Logo (Tanpa Background)";
+  img.style.maxWidth = "100%";
   img.style.marginTop = "10px";
+  img.style.border = "1px solid #ccc";
+  img.style.borderRadius = "8px";
   logoPreview.appendChild(img);
 });
 
+// ==== Tools ====
 function addDownloadButton(canvas) {
   const btn = document.createElement("button");
   btn.textContent = "⬇️ Unduh QR (PNG)";
-  btn.onclick = function () {
+  btn.onclick = () => {
     const a = document.createElement("a");
     a.href = canvas.toDataURL("image/png");
     a.download = "qrcode.png";
     a.click();
   };
   downloadContainer.appendChild(btn);
-}
-
-function downloadPNG() {
-  const canvas = qrContainer.querySelector("canvas");
-  if (!canvas) return;
-  const a = document.createElement("a");
-  a.href = canvas.toDataURL("image/png");
-  a.download = "qrcode.png";
-  a.click();
 }
 
 function downloadPDF() {
@@ -143,23 +139,15 @@ function copyQR() {
 
 function shareQR() {
   const canvas = qrContainer.querySelector("canvas");
-  if (!canvas || !navigator.canShare) {
-    alert("Fitur berbagi tidak didukung di browser ini.");
-    return;
-  }
+  if (!canvas || !navigator.canShare) return;
 
   canvas.toBlob((blob) => {
     const file = new File([blob], "qrcode.png", { type: "image/png" });
-
     if (navigator.canShare({ files: [file] })) {
-      navigator
-        .share({
-          title: "QR Code",
-          files: [file],
-        })
-        .catch((err) => {
-          console.error("Gagal berbagi:", err);
-        });
+      navigator.share({
+        title: "QR Code",
+        files: [file],
+      });
     } else {
       alert("Fitur berbagi tidak tersedia di perangkat ini.");
     }
@@ -169,32 +157,3 @@ function shareQR() {
 function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 }
-
-
-document.getElementById("bgInput").addEventListener("change", async function () {
-  const file = this.files[0];
-  if (!file || !file.type.startsWith("image/")) return alert("Pilih file gambar!");
-
-  const formData = new FormData();
-  formData.append("image_file", file);
-  formData.append("size", "auto");
-
-  const apiKey = "VfujqScV6JYmAvNKTza6PK28"; // <- Ganti dengan milikmu
-
-  try {
-    const res = await fetch("https://api.remove.bg/v1.0/removebg", {
-      method: "POST",
-      headers: { "X-Api-Key": apiKey },
-      body: formData,
-    });
-
-    if (!res.ok) throw new Error("Gagal memproses gambar");
-
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    document.getElementById("bgResult").innerHTML = `<img src="${url}" style="max-width:100%; border:1px solid #ccc;" />`;
-  } catch (err) {
-    alert("Gagal menghapus background gambar.");
-    console.error(err);
-  }
-});
