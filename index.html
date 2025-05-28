@@ -6,11 +6,11 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="icon.png">
-  <title>QR Generator Pro</title>
+  <title>Z13 Generator Pro</title>
 </head>
 <body>
   <div class="container">
-    <h1>🎯 QR Generator Pro</h1>
+    <h1>Z13 QR Generator Pro</h1>
     <form id="qrForm">
       <label for="text">Masukkan link atau teks</label>
       <input type="text" id="text" placeholder="WA, pembayaran, dsb" required />
@@ -40,13 +40,16 @@
     <div id="downloadContainer"></div>
   </div>
 
-  <aside class="sidebar">
-    <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
-    <button onclick="downloadPDF()">🧾 Unduh PDF</button>
-    <button onclick="copyQR()">📋 Salin Gambar</button>
-    <button onclick="shareQR()">📤 Bagikan</button>
-    <button onclick="toggleDarkMode()">🌓 Mode Gelap</button>
-  </aside>
+<div class="tools-toggle">
+  <button id="toggleSidebar">⚙️</button>
+</div>
+<aside class="sidebar responsive" id="responsiveSidebar">
+  <button onclick="downloadPNG()">⬇️ Unduh PNG</button>
+  <button onclick="downloadPDF()">🧾 Unduh PDF</button>
+  <button onclick="copyQR()">📋 Salin Gambar</button>
+  <button onclick="shareQR()">📤 Bagikan</button>
+  <button onclick="toggleDarkMode()">🌓 Mode Gelap</button>
+</aside>
 
   <marquee behavior="scroll" direction="left" class="marquee">Terima kasih telah menggunakan QR Generator Pro | Powered by OpenAI & Anda 😄</marquee>
 
