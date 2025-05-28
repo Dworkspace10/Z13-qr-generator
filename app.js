@@ -134,6 +134,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // In real app: you should send file to background removal API here, get processed image, then show + download link
   });
 
+  downloadPngBtn.addEventListener("click", () => {
+  if (!qrResult.firstChild) {
+    alert("Buat QR Code terlebih dahulu.");
+    return;
+  }
+
+  html2canvas(qrResult.firstChild).then((canvas) => {
+    const link = document.createElement("a");
+    link.download = "qr-code.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+});
+
   // --- Download QR as PNG ---
   downloadPngBtn.addEventListener("click", () => {
     if (!qrResult.firstChild) {
