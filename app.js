@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Element references
   const textInput = document.getElementById("text-input");
   const qrColor = document.getElementById("qr-color");
   const qrSize = document.getElementById("qr-size");
@@ -9,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const qrResult = document.getElementById("qr-result");
 
   const removeBgInput = document.getElementById("remove-bg-input");
-  const removeBgPreview = document.getElementById("logoPreview");
   const downloadRemovedBg = document.getElementById("download-removed-bg");
 
   const downloadPngBtn = document.getElementById("download-png");
@@ -20,193 +20,216 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleBtn = document.getElementById("toggleSidebar");
   const sidebar = document.querySelector(".sidebar");
 
-  // Sidebar toggle
+  // --- Sidebar toggle ---
   toggleBtn.addEventListener("click", () => {
     sidebar.classList.toggle("active");
   });
 
-  // Dark mode toggle
+  // --- Dark mode toggle ---
   darkModeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
   });
 
-  // Generate QR
+  // --- Generate QR Code ---
   generateBtn.addEventListener("click", () => {
     const text = textInput.value.trim();
-    if (!text) return alert("Masukkan link atau teks terlebih dahulu.");
+    if (!text) {
+      alert("Masukkan link atau teks terlebih dahulu.");
+      return;
+    }
 
-    const color = qrColor.value.substring(1);
+    const colorHex = qrColor.value.slice(1); // remove '#'
     const size = qrSize.value;
-    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(text)}&size=${size}x${size}&color=${color}`;
 
-    qrResult.innerHTML = "";
+    // Generate QR image url using qrserver api
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+      text
+    )}&size=${size}x${size}&color=${colorHex}`;
+
+    qrResult.innerHTML = ""; // Clear previous QR
+
+    // Container div to hold QR and logo overlay + desc
     const container = document.createElement("div");
     container.style.position = "relative";
     container.style.display = "inline-block";
     container.style.textAlign = "center";
 
+    // QR Image
     const qrImg = document.createElement("img");
     qrImg.src = qrUrl;
     qrImg.alt = "QR Code";
     qrImg.width = parseInt(size);
     qrImg.height = parseInt(size);
-    qrImg.style.display = "block";
+    qrImg.style.borderRadius = "12px";
     container.appendChild(qrImg);
 
+    // If logo is selected, overlay logo
     if (logoInput.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const logoImg = document.createElement("img");
         logoImg.src = e.target.result;
         logoImg.alt = "Logo";
-        logoImg.style.position = "absolute";
-        logoImg.style.top = "50%";
-        logoImg.style.left = "50%";
-        logoImg.style.transform = "translate(-50%, -50%)";
-        logoImg.style.width = "20%";
-        logoImg.style.height = "20%";
-        logoImg.style.borderRadius = "8px";
-        logoImg.style.backgroundColor = "white";
-        logoImg.style.padding = "2px";
+        logoImg.classList.add("logo-overlay");
         container.appendChild(logoImg);
       };
       reader.readAsDataURL(logoInput.files[0]);
     }
 
+    // Description text under QR
     if (qrDesc.value.trim()) {
       const desc = document.createElement("p");
       desc.textContent = qrDesc.value.trim();
-      desc.style.marginTop = "8px";
+      desc.style.marginTop = "12px";
       desc.style.fontWeight = "600";
+      desc.style.color = document.body.classList.contains("dark-mode") ? "#eee" : "#0f172a";
       container.appendChild(desc);
     }
 
     qrResult.appendChild(container);
   });
 
+  // --- Logo preview when upload logo ---
   logoInput.addEventListener("change", () => {
     logoPreview.innerHTML = "";
-    if (logoInput.files[0]) {
+    const file = logoInput.files[0];
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = document.createElement("img");
         img.src = e.target.result;
         img.alt = "Preview Logo";
-        img.style.maxWidth = "100%";
-        img.style.borderRadius = "8px";
-        img.style.border = "1px solid #ccc";
         logoPreview.appendChild(img);
       };
-      reader.readAsDataURL(logoInput.files[0]);
+      reader.readAsDataURL(file);
     }
   });
 
-  removeBgInput.addEventListener("change", async () => {
+  // --- Remove background from image using remove.bg API or similar ---
+  // NOTE: This requires a real API key and integration; here is a simple placeholder
+  removeBgInput.addEventListener("change", () => {
     const file = removeBgInput.files[0];
-    if (!file) return;
-    removeBgPreview.innerHTML = "<p>Memproses gambar...</p>";
-    downloadRemovedBg.style.display = "none";
+    if (!file || !file.type.startsWith("image/")) return;
 
-    const formData = new FormData();
-    formData.append("image_file", file);
-    formData.append("size", "auto");
-
-    try {
-      const res = await fetch("https://api.remove.bg/v1.0/removebg", {
-        method: "POST",
-        headers: {
-          "X-Api-Key": "YOUR_REMOVE_BG_API_KEY"
-        },
-        body: formData,
-      });
-
-      if (!res.ok) throw new Error("Gagal menghapus background.");
-
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      removeBgPreview.innerHTML = "";
-
-      const img = document.createElement("img");
-      img.src = url;
-      img.alt = "Logo tanpa background";
+    // For demo: just display image (you should replace with real API call)
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.src = e.target.result;
+      img.alt = "Preview Remove Background";
       img.style.maxWidth = "100%";
-      img.style.borderRadius = "8px";
-      img.style.border = "1px solid #ccc";
-      removeBgPreview.appendChild(img);
+      img.style.borderRadius = "12px";
 
-      downloadRemovedBg.href = url;
-      downloadRemovedBg.download = "logo-tanpa-bg.png";
+      // Clear preview and show image
+      logoPreview.innerHTML = "";
+      logoPreview.appendChild(img);
+
+      // Show download link for demo purposes (actual processed image)
+      downloadRemovedBg.href = e.target.result;
       downloadRemovedBg.style.display = "inline-block";
-    } catch (error) {
-      removeBgPreview.innerHTML = "";
-      alert("Terjadi kesalahan saat menghapus background: " + error.message);
-    }
+    };
+    reader.readAsDataURL(file);
+
+    // ===
+    // In real app: you should send file to background removal API here, get processed image, then show + download link
   });
 
+  // --- Download QR as PNG ---
   downloadPngBtn.addEventListener("click", () => {
-    const qrImg = qrResult.querySelector("img");
-    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
-    const link = document.createElement("a");
-    link.href = qrImg.src;
-    link.download = "qr-code.png";
-    link.click();
-  });
-
-  downloadPdfBtn.addEventListener("click", async () => {
-    if (typeof jsPDF === "undefined") {
-      alert("Fitur PDF butuh library jsPDF. Tambahkan dulu jsPDF di HTML.");
+    if (!qrResult.firstChild) {
+      alert("QR Code belum dibuat.");
       return;
     }
-    const qrImg = qrResult.querySelector("img");
-    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
-    const imgData = await getBase64ImageFromUrl(qrImg.src);
-    const pdf = new jsPDF();
-    pdf.addImage(imgData, "PNG", 15, 15, 180, 180);
-    pdf.save("qr-code.pdf");
-  });
+    const qrContainer = qrResult.firstChild;
 
-  copyImageBtn.addEventListener("click", async () => {
-    const qrImg = qrResult.querySelector("img");
-    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
-    try {
-      const response = await fetch(qrImg.src);
-      const blob = await response.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({ [blob.type]: blob })
-      ]);
-      alert("Gambar QR berhasil disalin ke clipboard!");
-    } catch (error) {
-      alert("Gagal menyalin gambar ke clipboard.");
-    }
-  });
-
-  shareBtn.addEventListener("click", async () => {
-    const qrImg = qrResult.querySelector("img");
-    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
-    if (!navigator.share) return alert("Fitur share tidak didukung di browser ini.");
-    try {
-      const response = await fetch(qrImg.src);
-      const blob = await response.blob();
-      const filesArray = [new File([blob], "qr-code.png", { type: blob.type })];
-      await navigator.share({ title: "QR Code", files: filesArray });
-    } catch (error) {
-      alert("Gagal membagikan QR Code.");
-    }
-  });
-
-  function getBase64ImageFromUrl(url) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = url;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        resolve(canvas.toDataURL("image/png"));
-      };
+    html2canvas(qrContainer).then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "qr-code.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
     });
-  }
+  });
+
+  // --- Download QR as PDF ---
+  downloadPdfBtn.addEventListener("click", () => {
+    if (!qrResult.firstChild) {
+      alert("QR Code belum dibuat.");
+      return;
+    }
+    const qrContainer = qrResult.firstChild;
+    const opt = {
+      margin: 1,
+      filename: "qr-code.pdf",
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+    html2pdf().set(opt).from(qrContainer).save();
+  });
+
+  // --- Copy QR Image to Clipboard ---
+  copyImageBtn.addEventListener("click", async () => {
+    if (!qrResult.firstChild) {
+      alert("QR Code belum dibuat.");
+      return;
+    }
+
+    try {
+      const qrContainer = qrResult.firstChild;
+      const canvas = await html2canvas(qrContainer);
+      canvas.toBlob(async (blob) => {
+        if (!blob) return alert("Gagal membuat gambar.");
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({
+              [blob.type]: blob,
+            }),
+          ]);
+          alert("QR Code berhasil disalin ke clipboard.");
+        } catch {
+          alert("Browser tidak mendukung fitur copy clipboard gambar.");
+        }
+      });
+    } catch {
+      alert("Terjadi kesalahan saat menyalin QR Code.");
+    }
+  });
+
+  // --- Share QR Code using Web Share API ---
+  shareBtn.addEventListener("click", async () => {
+    if (!qrResult.firstChild) {
+      alert("QR Code belum dibuat.");
+      return;
+    }
+    if (!navigator.canShare) {
+      alert("Browser Anda tidak mendukung fitur berbagi.");
+      return;
+    }
+
+    try {
+      const qrContainer = qrResult.firstChild;
+      const canvas = await html2canvas(qrContainer);
+      canvas.toBlob(async (blob) => {
+        if (!blob) return alert("Gagal membuat gambar untuk dibagikan.");
+
+        const filesArray = [
+          new File([blob], "qr-code.png", {
+            type: blob.type,
+          }),
+        ];
+
+        if (navigator.canShare({ files: filesArray })) {
+          await navigator.share({
+            files: filesArray,
+            title: "QR Code dari Z13 Generator",
+            text: "Ini QR Code yang saya buat menggunakan Z13 QR Generator Pro.",
+          });
+        } else {
+          alert("Browser Anda tidak mendukung berbagi file gambar.");
+        }
+      });
+    } catch {
+      alert("Terjadi kesalahan saat membagikan QR Code.");
+    }
+  });
 });
