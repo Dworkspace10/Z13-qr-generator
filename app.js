@@ -157,3 +157,7 @@ function shareQR() {
 function toggleDarkMode() {
   document.body.classList.toggle("dark-mode");
 }
+
+document.getElementById("toggleSidebar").addEventListener("click", () => {
+  document.getElementById("responsiveSidebar").classList.toggle("open");
+});
