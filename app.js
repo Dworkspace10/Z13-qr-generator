@@ -179,7 +179,7 @@ document.getElementById("bgInput").addEventListener("change", async function () 
   formData.append("image_file", file);
   formData.append("size", "auto");
 
-  const apiKey = "ISI_API_KEY_REMOVE_BG_KAMU"; // <- Ganti dengan milikmu
+  const apiKey = "VfujqScV6JYmAvNKTza6PK28"; // <- Ganti dengan milikmu
 
   try {
     const res = await fetch("https://api.remove.bg/v1.0/removebg", {
