@@ -9,73 +9,56 @@ document.addEventListener("DOMContentLoaded", () => {
   const qrResult = document.getElementById("qr-result");
 
   const removeBgInput = document.getElementById("remove-bg-input");
-  const removeBgPreview = document.getElementById("logoPreview"); // Reuse preview area
+  const removeBgPreview = document.getElementById("logoPreview");
   const downloadRemovedBg = document.getElementById("download-removed-bg");
 
-  // Sidebar buttons
   const downloadPngBtn = document.getElementById("download-png");
   const downloadPdfBtn = document.getElementById("download-pdf");
   const copyImageBtn = document.getElementById("copy-image");
   const shareBtn = document.getElementById("share-btn");
   const darkModeToggle = document.getElementById("dark-mode-toggle");
-
-  // Toggle Sidebar
   const toggleBtn = document.getElementById("toggleSidebar");
   const sidebar = document.querySelector(".sidebar");
-  const mainContainer = document.querySelector(".main-container");
 
+  // Sidebar toggle
   toggleBtn.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-    mainContainer.classList.toggle("collapsed");
+    sidebar.classList.toggle("active");
   });
 
-  // Dark Mode Toggle
+  // Dark mode toggle
   darkModeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
   });
 
-  // Generate QR Code with optional logo and description
+  // Generate QR
   generateBtn.addEventListener("click", () => {
     const text = textInput.value.trim();
-    if (!text) {
-      alert("Masukkan link atau teks terlebih dahulu.");
-      return;
-    }
+    if (!text) return alert("Masukkan link atau teks terlebih dahulu.");
+
     const color = qrColor.value.substring(1);
     const size = qrSize.value;
+    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(text)}&size=${size}x${size}&color=${color}`;
 
-    // Build QR code URL (basic)
-    let qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
-      text
-    )}&size=${size}x${size}&color=${color}`;
-
-    // Clear previous result
     qrResult.innerHTML = "";
-
-    // Create container for QR + desc + logo
     const container = document.createElement("div");
     container.style.position = "relative";
     container.style.display = "inline-block";
     container.style.textAlign = "center";
 
-    // QR Image
     const qrImg = document.createElement("img");
     qrImg.src = qrUrl;
     qrImg.alt = "QR Code";
     qrImg.width = parseInt(size);
     qrImg.height = parseInt(size);
     qrImg.style.display = "block";
-
     container.appendChild(qrImg);
 
-    // Add logo if exists
     if (logoInput.files[0]) {
       const reader = new FileReader();
       reader.onload = (e) => {
         const logoImg = document.createElement("img");
         logoImg.src = e.target.result;
         logoImg.alt = "Logo";
-        // Position logo in center of QR
         logoImg.style.position = "absolute";
         logoImg.style.top = "50%";
         logoImg.style.left = "50%";
@@ -90,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
       reader.readAsDataURL(logoInput.files[0]);
     }
 
-    // Add description text below QR code if any
     if (qrDesc.value.trim()) {
       const desc = document.createElement("p");
       desc.textContent = qrDesc.value.trim();
@@ -102,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     qrResult.appendChild(container);
   });
 
-  // Preview logo on logo input change
   logoInput.addEventListener("change", () => {
     logoPreview.innerHTML = "";
     if (logoInput.files[0]) {
@@ -120,30 +101,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Remove background image feature
-  removeBgInput.addEventListener("change", () => {
-    // Clear preview & download link on new file select
-    removeBgPreview.innerHTML = "";
-    downloadRemovedBg.style.display = "none";
-  });
-
   removeBgInput.addEventListener("change", async () => {
     const file = removeBgInput.files[0];
     if (!file) return;
+    removeBgPreview.innerHTML = "<p>Memproses gambar...</p>";
+    downloadRemovedBg.style.display = "none";
 
-    // Call remove.bg API
     const formData = new FormData();
     formData.append("image_file", file);
     formData.append("size", "auto");
 
     try {
-      downloadRemovedBg.style.display = "none";
-      removeBgPreview.innerHTML = "<p>Memproses gambar...</p>";
-
       const res = await fetch("https://api.remove.bg/v1.0/removebg", {
         method: "POST",
         headers: {
-          "X-Api-Key": "YOUR_REMOVE_BG_API_KEY" // Ganti dengan API key kamu
+          "X-Api-Key": "YOUR_REMOVE_BG_API_KEY"
         },
         body: formData,
       });
@@ -152,8 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-
       removeBgPreview.innerHTML = "";
+
       const img = document.createElement("img");
       img.src = url;
       img.alt = "Logo tanpa background";
@@ -171,52 +143,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Download QR PNG
   downloadPngBtn.addEventListener("click", () => {
-    if (!qrResult.querySelector("img")) {
-      alert("Buat QR Code terlebih dahulu.");
-      return;
-    }
     const qrImg = qrResult.querySelector("img");
+    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
     const link = document.createElement("a");
     link.href = qrImg.src;
     link.download = "qr-code.png";
     link.click();
   });
 
-  // Download PDF - menggunakan jsPDF
   downloadPdfBtn.addEventListener("click", async () => {
-    if (!qrResult.querySelector("img")) {
-      alert("Buat QR Code terlebih dahulu.");
-      return;
-    }
-    // Pastikan jsPDF sudah disertakan di project jika mau pakai fitur ini
     if (typeof jsPDF === "undefined") {
       alert("Fitur PDF butuh library jsPDF. Tambahkan dulu jsPDF di HTML.");
       return;
     }
     const qrImg = qrResult.querySelector("img");
-    const pdf = new jsPDF();
-    // Add QR image ke pdf
+    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
     const imgData = await getBase64ImageFromUrl(qrImg.src);
+    const pdf = new jsPDF();
     pdf.addImage(imgData, "PNG", 15, 15, 180, 180);
     pdf.save("qr-code.pdf");
   });
 
-  // Salin gambar QR ke clipboard
   copyImageBtn.addEventListener("click", async () => {
-    if (!qrResult.querySelector("img")) {
-      alert("Buat QR Code terlebih dahulu.");
-      return;
-    }
+    const qrImg = qrResult.querySelector("img");
+    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
     try {
-      const qrImg = qrResult.querySelector("img");
       const response = await fetch(qrImg.src);
       const blob = await response.blob();
       await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob
-        })
+        new ClipboardItem({ [blob.type]: blob })
       ]);
       alert("Gambar QR berhasil disalin ke clipboard!");
     } catch (error) {
@@ -224,48 +180,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Bagikan (Share API)
   shareBtn.addEventListener("click", async () => {
-    if (!qrResult.querySelector("img")) {
-      alert("Buat QR Code terlebih dahulu.");
-      return;
-    }
-    if (!navigator.share) {
-      alert("Fitur share tidak didukung di browser ini.");
-      return;
-    }
     const qrImg = qrResult.querySelector("img");
+    if (!qrImg) return alert("Buat QR Code terlebih dahulu.");
+    if (!navigator.share) return alert("Fitur share tidak didukung di browser ini.");
     try {
       const response = await fetch(qrImg.src);
       const blob = await response.blob();
-      const filesArray = [
-        new File([blob], "qr-code.png", {
-          type: blob.type,
-        }),
-      ];
-      await navigator.share({
-        title: "QR Code",
-        files: filesArray,
-      });
+      const filesArray = [new File([blob], "qr-code.png", { type: blob.type })];
+      await navigator.share({ title: "QR Code", files: filesArray });
     } catch (error) {
       alert("Gagal membagikan QR Code.");
     }
   });
 
-  // Helper function untuk convert image URL ke base64 (pakai canvas)
-  async function getBase64ImageFromUrl(imageUrl) {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = imageUrl;
+  function getBase64ImageFromUrl(url) {
     return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.src = url;
       img.onload = () => {
         const canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL("image/png");
-        resolve(dataURL);
+        resolve(canvas.toDataURL("image/png"));
       };
     });
   }
