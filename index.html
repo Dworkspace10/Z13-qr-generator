@@ -8,60 +8,52 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
-  <div class="flex">
-    <!-- Sidebar -->
-    <div class="min-h-screen w-40 bg-[#0f172a] text-white p-4 flex flex-col gap-4">
-      <button id="downloadPNG" class="btn-sidebar">📥 Unduh PNG</button>
-      <button id="downloadPDF" class="btn-sidebar">📄 Unduh PDF</button>
-      <button id="copyImage" class="btn-sidebar">📋 Salin Gambar</button>
-      <button id="shareImage" class="btn-sidebar">🔗 Bagikan</button>
-      <button id="toggleDark" class="btn-sidebar">🌓 Mode Gelap</button>
-    </div>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-6 flex flex-col items-center">
-      <div class="card w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-4 text-center">Z13 QR Generator Pro</h1>
-
-        <label class="block mb-2">Masukkan link atau teks</label>
-        <input type="text" id="text" class="input" placeholder="WA, pembayaran, dsb" />
-
-        <label class="block mt-4 mb-2">Warna QR</label>
-        <input type="color" id="color" class="w-full h-10 rounded" />
-
-        <label class="block mt-4 mb-2">Ukuran</label>
-        <select id="size" class="input">
-          <option value="256">256 x 256</option>
-          <option value="512">512 x 512</option>
-          <option value="1024">1024 x 1024</option>
-        </select>
-
-        <label class="block mt-4 mb-2">Deskripsi Tambahan (opsional)</label>
-        <textarea id="extraText" class="input" rows="3"></textarea>
-
-        <label class="block mt-4 mb-2">Logo (opsional)</label>
-        <input type="file" id="logoInput" accept="image/*" class="input" />
-
-        <button id="generateQR" class="btn-primary mt-4 w-full">📡 Buat QR</button>
-      </div>
-
-      <!-- Preview QR -->
-      <div id="qrResult" class="mt-6"></div>
-
-      <!-- Fitur Remove Background -->
-      <div class="card mt-6 text-center">
-        <h3 class="text-lg font-semibold mb-2 flex items-center justify-center gap-2">
-          🪄 Hapus Background Gambar
-        </h3>
-        <input type="file" id="removeBgInput" accept="image/*" class="input" />
-        <div id="logoPreview" class="mt-4"></div>
-      </div>
-
-      <!-- Marquee -->
-      <marquee class="mt-8 text-sm">Gunakan QR Generator Pro | Powered by OpenAI & Anda 😎</marquee>
-    </main>
+<body>
+  <div class="sidebar">
+    <button id="download-png">📥 Unduh PNG</button>
+    <button id="download-pdf">📄 Unduh PDF</button>
+    <button id="copy-image">📋 Salin Gambar</button>
+    <button id="share-btn">🔗 Bagikan</button>
+    <button id="dark-mode-toggle">🌓 Mode Gelap</button>
   </div>
+
+  <main>
+    <section class="container">
+      <h1>Z13 QR Generator Pro</h1>
+      <label>Masukkan link atau teks</label>
+      <input type="text" id="text-input" placeholder="WA, pembayaran, dsb" />
+
+      <label>Warna QR</label>
+      <input type="color" id="qr-color" value="#000000" />
+
+      <label>Ukuran</label>
+      <select id="qr-size">
+        <option value="256">256 x 256</option>
+        <option value="512">512 x 512</option>
+      </select>
+
+      <label>Deskripsi Tambahan (opsional)</label>
+      <textarea id="qr-desc" placeholder="Teks di bawah QR (opsional)"></textarea>
+
+      <label>Logo (opsional)</label>
+      <input type="file" id="logo-input" accept="image/*" />
+
+      <button id="generate-btn">🎯 Buat QR</button>
+
+      <div id="qr-result"></div>
+
+      <div class="remove-bg-section">
+        <h3>🛠️ Hapus Background Gambar</h3>
+        <input type="file" id="remove-bg-input" accept="image/*" />
+        <div id="logoPreview"></div>
+        <a id="download-removed-bg" href="#" download style="display: none;">⬇️ Unduh Logo Tanpa Background</a>
+      </div>
+    </section>
+
+    <footer>
+      <marquee>Gunakan QR Generator Pro | Powered by OpenAI & Anda 😎</marquee>
+    </footer>
+  </main>
 
   <script src="app.js"></script>
 </body>
