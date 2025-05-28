@@ -6,57 +6,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png" />
   <title>Z13 QR Generator Pro</title>
 </head>
 
 <body>
-  <button id="toggleSidebar" class="toggle-btn">☰</button>
+  <button id="toggleSidebar" class="toggle-btn" aria-label="Toggle sidebar">☰</button>
 
-  <nav class="sidebar">
-    <button id="download-png">📅 Unduh PNG</button>
-    <button id="download-pdf">📄 Unduh PDF</button>
-    <button id="copy-image">📋 Salin Gambar</button>
-    <button id="share-btn">🔗 Bagikan</button>
-    <button id="dark-mode-toggle">🌑 Mode Gelap</button>
+  <nav class="sidebar" aria-label="Sidebar navigation">
+    <button id="download-png" class="sidebar-btn">📅 Unduh PNG</button>
+    <button id="download-pdf" class="sidebar-btn">📄 Unduh PDF</button>
+    <button id="copy-image" class="sidebar-btn">📋 Salin Gambar</button>
+    <button id="share-btn" class="sidebar-btn">🔗 Bagikan</button>
+    <button id="dark-mode-toggle" class="sidebar-btn">🌑 Mode Gelap</button>
   </nav>
 
-  <div class="main-container">
-    <section class="card">
+  <main class="main-container">
+    <section class="card qr-generator">
       <h1>Z13 QR Generator Pro</h1>
+
       <label for="text-input">Masukkan link atau teks</label>
-      <input type="text" id="text-input" placeholder="WA, pembayaran, dsb" />
+      <input type="text" id="text-input" placeholder="WA, pembayaran, dsb" autocomplete="off" />
 
       <label for="qr-color">Warna QR</label>
       <input type="color" id="qr-color" value="#000000" />
 
       <label for="qr-size">Ukuran</label>
-      <select id="qr-size">
+      <select id="qr-size" aria-label="Pilih ukuran QR">
         <option value="256">256 x 256</option>
         <option value="512">512 x 512</option>
       </select>
 
       <label for="qr-desc">Deskripsi Tambahan (opsional)</label>
-      <textarea id="qr-desc" placeholder="Teks di bawah QR (opsional)"></textarea>
+      <textarea id="qr-desc" placeholder="Teks di bawah QR (opsional)" rows="3"></textarea>
 
       <label for="logo-input">Logo (opsional)</label>
       <input type="file" id="logo-input" accept="image/*" />
 
-      <button id="generate-btn">🎯 Buat QR</button>
-      <div id="qr-result"></div>
+      <button id="generate-btn" class="btn-primary">🎯 Buat QR</button>
+
+      <div id="qr-result" aria-live="polite" aria-label="Hasil QR Code"></div>
     </section>
 
     <section class="card remove-bg-section">
-      <h3>🛠️ Hapus Background Gambar</h3>
+      <h2>🛠️ Hapus Background Gambar</h2>
       <input type="file" id="remove-bg-input" accept="image/*" />
-      <div id="logoPreview"></div>
-      <a id="download-removed-bg" href="#" download style="display: none;">⬇️ Unduh Logo Tanpa Background</a>
+      <div id="logoPreview" aria-live="polite" aria-label="Preview gambar tanpa background"></div>
+      <a id="download-removed-bg" href="#" download style="display: none;" class="btn-secondary">⬇️ Unduh Logo Tanpa Background</a>
     </section>
+  </main>
 
-    <footer>
-      <marquee>🎉 Selamat datang di Z13 QR Code Generator Pro! Gunakan logo dengan background transparan untuk hasil terbaik! 🎉 MD(^<^)</marquee>
-    </footer>
-  </div>
+  <footer>
+    <p class="marquee-text" aria-live="polite" role="status">
+      🎉 Selamat datang di Z13 QR Code Generator Pro! Gunakan logo dengan background transparan untuk hasil terbaik! 🎉 MD(^<^)
+    </p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
